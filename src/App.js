@@ -9,7 +9,6 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 
 
-
 if (!firebase.apps.length) {
   firebase.initializeApp({
     apiKey: "AIzaSyBHtyWOYaXyVM9e6ff-YAezXOJhUzs8-KY",
@@ -49,7 +48,10 @@ function SignIn() {
   }
 
   return (
-    <button onClick={SignInWithGoogle}>Sign in with Google</button>
+    <>
+      <button onClick={SignInWithGoogle}>Sign in with Google</button>
+      <p>Do not violate the community guidelines!</p>
+    </>
   )
 }
 
@@ -60,6 +62,7 @@ function SignOut() {
 }
 
 function ChatRoom() {
+  const dummy = useRef();
   const messagesRef = firestore.collection('messages');
   const query = messagesRef.orderBy('createdAt').limit(25);
 
@@ -79,15 +82,17 @@ function ChatRoom() {
     });
 
     setFormValue('');
+    dummy.current.scrollIntoView({ behavior: 'smooth' });
   }
 
   return (
     <>
-      <div>
+      <main>
         {messages && messages.map(msg => <ChatMessage key={msg.id} message={msg} />)}
-      </div>
+        <div ref={dummy}></div>
+      </main>
       <form onSubmit={sendMessage}>
-        <input />
+        <input value={formValue} onChange={(e) => setFormValue(e.target.value)} />
         <button type="submit">Send</button>
       </form>
     </>
